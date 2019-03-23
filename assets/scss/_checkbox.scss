@@ -1,0 +1,53 @@
+/* https://bootsnipp.com/snippets/gv6Pe */
+.custom-checkbox {
+  min-height: 1rem;
+  padding-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.custom-checkbox .custom-control-indicator {
+  content: "";
+  display: inline-block;
+  position: relative;
+  width: 30px;
+  height: 16px;
+  background-color: #818181;
+  border-radius: 15px;
+  -webkit-transition: background .3s ease;
+  transition: background .3s ease;
+  vertical-align: middle;
+  box-shadow: none;
+
+  &:after {
+    content: "";
+    position: absolute;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-color: #fefefe;
+    border-radius: 21px;
+    left: 1px;
+    bottom: 1px;
+    box-shadow: 0 .3px .8px .3px rgba(0, 0, 0, 0.2);
+    /*left: -2px;*/
+    /*top: -4px;*/
+    -webkit-transition: left .3s ease, background .3s ease, box-shadow .1s ease;
+    transition: left .3s ease, background .3s ease, box-shadow .1s ease;
+  }
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-indicator {
+  background-color: $go-secondary;
+  background-image: none;
+  box-shadow: none !important;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-indicator:after {
+  left: 15px;
+}
+
+.custom-checkbox .custom-control-input:focus ~ .custom-control-indicator {
+  box-shadow: none !important;
+}

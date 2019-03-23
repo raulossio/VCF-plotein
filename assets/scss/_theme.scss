@@ -1,0 +1,28 @@
+$sidebar-width: 50px;
+$sidebar-extra-width: 350px;
+$navbar-height: 40px;
+
+// COLORS
+
+$go-primary:        #263238 !default;
+$go-primary-light:  #4f5b62 !default;
+$go-primary-dark:   #000a12 !default;
+
+$go-secondary:        #ff6b00 !default;
+$go-secondary-light:  #ff9c40 !default;
+$go-secondary-dark:   #c43a00 !default;
+
+$go-charcoal:       #212121 !default;
+
+// Bootstrap colors override
+$theme-colors: (
+    "primary":           $go-primary,
+    "primary-light":     $go-primary-light,
+    "primary-dark":      $go-primary-dark,
+    "secondary":         $go-secondary,
+    "secondary-light":   $go-secondary-light,
+    "secondary-dark":    $go-secondary-dark,
+    "charcoal":          $go-charcoal,
+);
+
+

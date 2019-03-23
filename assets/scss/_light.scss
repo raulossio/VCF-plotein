@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,700');
+
+* {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 400;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4 {
+  font-weight: 300;
+  margin: 30px 0 15px;
+}
+
+h1,
+.h1 {
+  font-size: 3.25rem;
+}
+
+h2,
+.h2 {
+  font-size: 2.25rem;
+}
+
+h3,
+.h3 {
+  font-size: 1.75rem;
+  margin: 20px 0 10px;
+}
+
+h4,
+.h4 {
+  font-size: 1.375rem;
+  line-height: 30px;
+}
+
+h5,
+.h5 {
+  font-size: 1.125rem;
+  margin-bottom: 15px;
+}
+
+h6,
+.h6 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+h1 small,
+h2 small,
+h3 small,
+h4 small,
+h5 small,
+h6 small,
+.h1 small,
+.h2 small,
+.h3 small,
+.h4 small,
+.h5 small,
+.h6 small,
+h1 .small,
+h2 .small,
+h3 .small,
+h4 .small,
+h5 .small,
+h6 .small,
+.h1 .small,
+.h2 .small,
+.h3 .small,
+.h4 .small,
+.h5 .small,
+.h6 .small {
+  color: #9A9A9A;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+h1 small,
+h2 small,
+h3 small,
+h1 .small,
+h2 .small,
+h3 .small {
+  font-size: 60%;
+}
+
+h1 .subtitle {
+  display: block;
+  margin: 0 0 30px;
+}
+
+.text-muted {
+  color: #9A9A9A;
+}
+
+.text-primary,
+.text-primary:hover {
+  color: #1D62F0 !important;
+}
+
+.text-info,
+.text-info:hover {
+  color: #23CCEF !important;
+}
+
+.text-success,
+.text-success:hover {
+  color: #87CB16 !important;
+}
+
+.text-warning,
+.text-warning:hover {
+  color: #FFA534 !important;
+}
+
+.text-danger,
+.text-danger:hover {
+  color: #FB404B !important;
+}
+
+.typo-line {
+  padding-left: 140px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.typo-line .category {
+  transform: translateY(-50%);
+  top: 50%;
+  left: 0px;
+  position: absolute;
+  font-size: 14px;
+  font-weight: 400;
+  color: #888888;
+  margin-bottom: 0px;
+}
+
+blockquote {
+  padding: 10px 20px;
+  margin: 0 0 20px;
+  font-size: 17.5px;
+  border-left: 5px solid #eee;
+}
+
+.table>thead>tr>th {
+  border-bottom-width: 1px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+}
+.table>tbody>tr {
+  font-size: 14px !important;
+}
+
+.options {
+  font-size: .85em;
+  background-color:#eee;
+  background-repeat: repeat;
+  padding: 5px;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.options .options-content {
+  width:100%;
+  padding: 5px;
+  margin:0;
+}
+
+.options legend {
+  font-weight: bold;
+  font-size: .95em;
+}

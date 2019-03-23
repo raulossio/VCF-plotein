@@ -1,0 +1,131 @@
+html,
+body,
+#__nuxt,
+#__layout,
+#default-wrapper {
+  height: 100%;
+  min-height: 100%;
+}
+
+#wrapper {
+  padding-left: 0;
+  -webkit-transition: padding-left 0.1s ease;
+  -moz-transition: padding-left 0.1s ease;
+  -o-transition: padding-left 0.1s ease;
+  transition: padding-left 0.1s ease;
+  padding-left: $sidebar-width;
+}
+
+#wrapper.toggle {
+  padding-left: calc(#{$sidebar-width} + #{$sidebar-extra-width});
+  #sidebar-wrapper {
+    width: calc(#{$sidebar-width} + #{$sidebar-extra-width});
+  }
+}
+
+.fullscreen #page-content-wrapper {
+  min-height: 100vh;
+}
+
+#sidebar-wrapper {
+  z-index: 1000;
+  position: fixed;
+  left: $sidebar-width;
+  width: $sidebar-width;
+  height: 100%;
+  margin-left: -$sidebar-width;
+  overflow-y: hidden;
+  background-color: $go-primary;
+  -webkit-transition: all 0.1s ease;
+  -moz-transition: all 0.1s ease;
+  -o-transition: all 0.1s ease;
+  transition: all 0.1s ease;
+  background-clip: padding-box;
+}
+
+#page-content-wrapper {
+  min-height: calc(100vh - #{$navbar-height});
+  display: flex;
+  flex-direction: column;
+}
+#page-content-wrapper .row1 {
+  order: 1;
+}
+#page-content-wrapper .row3 {
+  order: 3;
+}
+#page-content-wrapper .row2 {
+  flex: 2;
+  order: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#page-content-wrapper .row2 #main-card {
+  width: 100%;
+}
+
+.sidebar-nav {
+  position: absolute;
+  top: 0;
+  width: $sidebar-width;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-nav-bottom {
+  position: absolute;
+  bottom: 53px;
+  width: $sidebar-width;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-nav li {
+  text-indent: 20px;
+  line-height: 40px;
+}
+
+.sidebar-nav>.sidebar-brand {
+  height: 65px;
+  font-size: 18px;
+  line-height: 60px;
+}
+
+.sidebar-extra {
+  background-color: #eee;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: $sidebar-width;
+  width: $sidebar-extra-width;
+  margin: 0;
+  padding: 0;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-bottom: 50px;
+  margin-bottom: 50px;
+  list-style: none;
+  overflow-y: scroll;
+}
+
+#sidebar-wrapper button.btn-primary {
+  border-radius: unset;
+
+  &:active, &.active {
+    border-left: 3px solid $go-secondary !important;
+  }
+}
+
+.btn-close-sidebar {
+  position: absolute;
+  right: 0;
+}
+
+.colorpicker {
+  width: 100%;
+  padding: 0;
+  border: 0;
+}

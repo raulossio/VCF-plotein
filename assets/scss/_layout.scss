@@ -1,0 +1,38 @@
+#default-wrapper {
+  display: grid;
+  min-height: 100vh;
+  grid-auto-rows: 50px auto;
+  grid-auto-columns: repeat(12, 1fr);
+}
+
+#top-nav {
+  background-color: silver;
+  position: sticky;
+  top: 0;
+}
+
+#main-section {
+  display: grid;
+  min-height: 100%;
+  grid-template-columns: 7vw repeat(12, 1fr);
+
+  &.extra {
+    grid-template-columns: 20vw repeat(12, 1fr);
+
+    #side-bar {
+      width: 20vw;
+    }
+  }
+}
+
+#side-bar {
+  position: fixed;
+  width: 7vw;
+  height: 100%;
+  background-color: cyan;
+}
+
+#main-content {
+  grid-column: 2 / span 12;
+  background-color: lightgreen;
+}

@@ -1,0 +1,22 @@
+.drag-drop {
+  height: 120px;
+  border: 2px dashed #ccc;
+  background-color: #eee;
+}
+
+.drag-drop input {
+  height: 100%;
+}
+
+.drag-drop .custom-file-label {
+  border: none;
+  height: 100%;
+  color: black;
+  line-height: 105px;
+  text-align: center;
+  background-color: #eee;
+
+  &::after {
+    opacity: 0;
+  }
+}

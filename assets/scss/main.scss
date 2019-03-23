@@ -1,0 +1,66 @@
+@mixin align-items-center() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@import './_theme.scss'; // theme must go before bootstrap
+
+@import '~bootstrap/scss/bootstrap';
+@import './_light.scss';
+@import './_notifications.scss';
+
+@import './_colors.scss';
+
+@import './_spinner.scss';
+@import './_scrollbars.scss';
+@import './_checkbox.scss';
+@import './_dragndrop.scss';
+@import './_buttons.scss';
+@import './_cards.scss';
+@import './_navpills.scss';
+@import './_utils.scss';
+
+@import './_index.scss';
+@import './_navbar.scss';
+@import './_sidebar.scss';
+@import './_graph.scss';
+
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+
+.text-black {
+  color: black !important;
+}
+
+.text-normal {
+  text-transform: none;
+}
+
+code {
+  color: $go-secondary-dark;
+}
+
+#tabla caption {
+  text-align: center;
+}
+
+@media print
+{
+  #wrapper.toggle {
+    padding-left: 0;
+  }
+  .no-print, .no-print * {
+    display: none !important;
+  }
+}
