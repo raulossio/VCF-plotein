@@ -1,0 +1,37 @@
+.page-item.active .page-link {
+  color: black;
+}
+
+.shadow {
+  box-shadow: 0 5px 20px 0 rgba(62, 57, 107, 0.07), 0 1px 5px 0 rgba(62, 57, 107, 0.06);
+}
+
+div.fullscreen {
+  background-color: white !important;
+}
+
+.d3-tip {
+  color: #000;
+  background-color: rgba(240, 240, 240, .8);
+  border: solid 1px #ccc;
+  box-shadow: 0 5px 20px 0 rgba(62, 57, 107, 0.07), 0 1px 5px 0 rgba(62, 57, 107, 0.06);
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+span.muted, p.muted {
+  font-size: .85em;
+  color: #777;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+}
+
+input.center {
+  float: left;
+  margin: 0 auto;
+  width: 100%;
+}
