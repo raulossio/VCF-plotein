@@ -44,7 +44,6 @@
         mySetFilter: 'genefilter/setFilter',
       }),
       setFilter (filter) {
-        debugger;
         this.mySetFilter({filter: filter.id, type: 'goterm'})
       }
     }
