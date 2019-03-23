@@ -51,26 +51,55 @@
       ...mapGetters({
         myGenes: 'getGenes',
         mySpinner: 'getSpinner',
+        myPhenotypes: 'getPhenotypes',
         myFilter: 'genefilter/getFilter',
         myFilterType: 'genefilter/getType',
       }),
       filteredGeneList() {
+        debugger
         let gene_list = this.myGenes.filter(gene => {
           return (gene.name.toLowerCase().includes(this.search.toLowerCase()) ||
             gene.id.toLowerCase().includes(this.search.toLowerCase()))
         })
-        if (this.myFilterType === 'goterm') {
-          gene_list = gene_list.filter(gene => (
-            gene.go && gene.go.includes(this.myFilter)
-          ))
-        }
-        if (this.myFilterType === 'chromosome') {
-          gene_list = gene_list.filter(gene => (
-            gene.chr.toString() === this.myFilter
-          ))
+        if (this.myFilterType === 'phenotypes') {
+          let genes_list_phe =[]
+          //get gen by phenotype
+           let genes = this.getGenesByPhenotype(this.myFilter)
+
+           genes.forEach(function(g) {
+                let gt= gene_list.filter(gene => ( gene.name.includes(g) ))
+                genes_list_phe.push(gt)
+            });
+           var genes_list_phe_marge = [].concat.apply([],genes_list_phe)
+           let dictionary=[...new Set(genes_list_phe_marge)];
+
+          return dictionary;
+        }else{
+          if (this.myFilterType === 'goterm') {
+            gene_list = gene_list.filter(gene => (
+              gene.go && gene.go.includes(this.myFilter)
+            ))
+          }
+          if (this.myFilterType === 'chromosome') {
+            gene_list = gene_list.filter(gene => (
+              gene.chr.toString() === this.myFilter
+            ))
+          }
+
         }
         return gene_list
+
       }
+
     },
+    methods: {
+      getGenesByPhenotype(phe){
+        var genesObject= this.myPhenotypes.filter(function(o) {
+          return o['phenotypes'].includes(phe)
+        });
+        let genes =genesObject.map(p=> p['gen']);
+        return genes;
+      },
+    }
   }
 </script>

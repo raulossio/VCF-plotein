@@ -21,6 +21,7 @@ const BASE_STATE = {
   genes: [],
   goterms: {},
   transcripts: [],
+  phenotypes:[],
   // Variants, domains and consequences
   variants: [],
   domains: [],
@@ -54,6 +55,7 @@ export const getters = {
   getGenes: (state) => (state.genes),
   getGoterms: (state) => (state.goterms),
   getTranscripts: (state) => (state.transcripts),
+  getPhenotypes: (state) => (state.phenotypes),
   getVariants: (state) => (state.variants),
   getDomains: (state) => (state.domains),
   getConsequences: (state) => (state.consequences),
@@ -144,6 +146,7 @@ export const mutations = {
   setConsequences: (state, consequences) => {state.consequences = consequences},
   setSpinner: (state, spinner) => {state.spinner = spinner},
   setVariant: (state, variant) => {state.variant = variant},
+  setPhenotypes: (state, phenotype) => {state.phenotypes = phenotype},
   // Specific
   setNumVcfVars: (state, num_vcf_vars) => {state.info.num_vcf_vars = num_vcf_vars},
   setNumVcfSamples: (state, num_vcf_samples) => {state.info.num_vcf_samples = num_vcf_samples},
@@ -169,6 +172,7 @@ export const actions = {
     commit('setBookmark', {genes:{}})
     commit('setGenes', [])
     commit('setGoterms', {})
+    commit('setPhenotypes', [])
     commit('setInfo', {})
     commit('setTranscripts', [])
 
@@ -188,7 +192,6 @@ export const actions = {
 
   // fetch
   async fetchAllData ({state, commit, dispatch}, gene) {
-    debugger;
     dispatch('clearAllGene')
     commit('setSpinner', true)
     console.time('fetchAllData')
@@ -224,7 +227,6 @@ export const actions = {
       } catch (error) {
         console.error('Error fetching variants', error)
       }
-
       commit('setSpinner', false)
       console.timeEnd('fetchAllData')
     })
@@ -290,6 +292,19 @@ export const actions = {
     console.timeEnd('goterms')
 
     commit('setGoterms', goterms)
+    commit('setSpinner', false)
+  },
+
+  async setPhenotypes ({state, commit}) {
+    debugger;
+    commit('setSpinner', true)
+
+    console.time('phenotype')
+    let phenotype = await API.fetchPhenotype(state.genes.map(g=>g.name))
+  
+    console.timeEnd('phenotype')
+
+    commit('setPhenotypes', phenotype)
     commit('setSpinner', false)
   },
 
