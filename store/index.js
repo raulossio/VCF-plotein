@@ -27,6 +27,7 @@ const BASE_STATE = {
     domains: [],
     consequences: [],
     sifts: [],
+    polyphen_predictions: [],
     // Extra
     variant: {},
     spinner: false,
@@ -61,6 +62,7 @@ export const getters = {
     getDomains: (state) => (state.domains),
     getConsequences: (state) => (state.consequences),
     getSifts: (state) => (state.sifts),
+    getPolyphenPredictions: (state) => (state.polyphen_predictions),
     getSpinner: (state) => (state.spinner),
     getVariant: (state) => (state.variant),
     // Filter
@@ -71,7 +73,9 @@ export const getters = {
         (!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(v.sift_prediction)) &&
         (v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes("Not Available")) &&
 
-        //getters.getStatusSiftsName.some(vsp => vsp == v.sift_prediction) &&
+        (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
+        (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
+
         (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true) &&
         (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true) &&
         (getters.getFilterDbsnp ? v[`dbSnp_${state.version}`] : true) &&
@@ -89,12 +93,18 @@ export const getters = {
     getStatusSifts: (state) => (state.sifts.filter(c => c.status)),
     getStatusSiftsName: (state, getters) => (getters.getStatusSifts.map(c => c.name)),
 
+    getStatusPolyphenPredictions: (state) => (state.polyphen_predictions.filter(c => c.status)),
+    getStatusPolyphenPredictionsName: (state, getters) => (getters.getStatusPolyphenPredictions.map(c => c.name)),
+
+
+
     getAllTranscript: (state, getters) => ({
         info: getters.getInfo,
         variants: getters.getVariants,
         domains: getters.getDomains,
         consequences: getters.getConsequences,
-        sifts: getters.getSifts
+        sifts: getters.getSifts,
+        polyphen_predictions: getters.getPolyphenPredictions
     }),
     getMutations: (state, getters) => ([
         ...getters.getStatusVariants,
@@ -183,6 +193,24 @@ export const mutations = {
     },
     setSiftStatus: (state, { index, val }) => { state.sifts[index].status = val },
 
+    setPolyphenPredictions: (state, variants) => {
+        debugger;
+        let polyphen_prediction = variants.filter(v =>
+            (v.hasOwnProperty("polyphen_prediction") && v['polyphen_prediction'])
+        );
+        let selectField = polyphen_prediction.map(s => s["polyphen_prediction"]);
+        let MargeFields = [].concat.apply([], selectField);
+        if (variants.length > polyphen_prediction.length) {
+            MargeFields.push("Not Available")
+        }
+        let dictionaryPolyphenPredictions = [...new Set(MargeFields)];
+
+        let id = 0;
+        state.polyphen_predictions = dictionaryPolyphenPredictions.map(s => { return { id: id++, name: s, status: true } })
+
+    },
+    setPolyphenPredictionsStatus: (state, { index, val }) => { state.polyphen_predictions[index].status = val },
+
     setConsequenceStatus: (state, { index, val }) => { state.consequences[index].status = val },
     setConsequenceColor: (state, { index, val }) => { state.consequences[index].color = val },
     setSampleStatus: (state, { sample, val }) => { sample.status = val },
@@ -213,6 +241,7 @@ export const actions = {
         commit('setDomains', [])
         commit('setConsequences', [])
         commit('setSifts', [])
+        commit('setPolyphenPredictions', [])
         commit('setVariant', {})
         commit('setSpinner', false)
         commit('clearFilters')
@@ -256,6 +285,7 @@ export const actions = {
                 commit('setVariants', obj.variants)
                 debugger
                 commit('setSifts', obj.variants)
+                commit('setPolyphenPredictions', obj.variants)
                 commit('setConsequences', obj.consequences)
             } catch (error) {
                 console.error('Error fetching variants', error)
@@ -310,6 +340,14 @@ export const actions = {
             let val = selected.includes(cons.id)
             if (cons.status !== val) {
                 commit('setSiftStatus', { index, val })
+            }
+        }
+    },
+    setSelectedPolyphenPredictions({ state, commit }, selected) {
+        for (const [index, cons] of state.polyphen_predictions.entries()) {
+            let val = selected.includes(cons.id)
+            if (cons.status !== val) {
+                commit('setPolyphenPredictionsStatus', { index, val })
             }
         }
     },
