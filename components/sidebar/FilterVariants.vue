@@ -7,6 +7,7 @@
       <b-card-body class="p-0">
         <filter-consequences v-if="item.key === 'consequences'" />
         <filter-clinical v-else-if="item.key === 'clinical'" />
+          <filter-sift v-else-if="item.key === 'sift'" />
       </b-card-body>
     </b-card>
   </base-titled-section>
@@ -15,18 +16,20 @@
 <script>
   import FilterConsequences from '~/components/sidebar/FilterConsequences'
   import FilterClinical from '~/components/sidebar/FilterClinical'
+  import FilterSift from '~/components/sidebar/FilterSift'
 
   const list = [
     {title: 'Filter by consequences', key: 'consequences'},
     {title: 'Filter by clinical', key: 'clinical'},
-    // {title: 'Filter by prediction', key: 'prediction'},
+    {title: 'Filter by sift', key: 'sift'},
     // {title: 'Filter by population', key: 'population'}
   ]
 
   export default {
     components: {
       FilterConsequences,
-      FilterClinical
+      FilterClinical,
+      FilterSift
     },
     data: () => ({
       list: list

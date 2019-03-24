@@ -8,23 +8,19 @@
             <span class="custom-control-indicator"></span>
           </label>
         </th>
-        <th scope="col">Consequence</th>
-        <th scope="col" style="width: 20px;">Color</th>
+          <th scope="col">All SIFT categories</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="con in myConsequences" :key="con.id">
+      <tr v-for="sift in mysifts" :key="sift.id">
         <th scope="row" class="text-center">
           <label class="custom-control custom-checkbox">
-            <input type="checkbox" :value="con.id" v-model="selected" class="custom-control-input center">
+            <input type="checkbox" :value="sift.id" v-model="selected" class="custom-control-input center">
             <span class="custom-control-indicator"></span>
           </label>
         </th>
         <td>
-          {{con.name}}
-        </td>
-        <td>
-          <input @change="changeColor" :id="con.id" :value="con.color" class="colorpicker center" type="color">
+          {{sift.name}}
         </td>
       </tr>
     </tbody>
@@ -36,28 +32,31 @@
 
   export default {
     computed: {
-      ...mapGetters({
-        myConsequences: 'getConsequences',
-        myStatusConsequences: 'getStatusConsequences'
+       ...mapGetters({
+        mysifts: 'getSifts',
+        myStatusSifts: 'getStatusSifts'
       }),
       selected: {
         get () {
           debugger
-          let statusConsequences = this.myStatusConsequences.map(c=>c.id)
-          return [...new Set(statusConsequences)]
+          let statusSifts = this.myStatusSifts.map(s=>s.id)
+          return [...new Set(statusSifts)]
         },
         set (newList) {
-          this.setSelectedConsequences(newList)
+          debugger
+            this.setSelectedSift(newList)
         }
       },
       selectAll: {
         get () {
-          return this.selected.length === this.myConsequences.length
+          debugger
+          return this.selected.length === this.mysifts.length
         },
         set (value) {
-          let selected = []
+          debugger 
+         let selected = []
           if (value) {
-            for (const cons of this.myConsequences) {
+            for (const cons of this.mysifts) {
               selected.push(cons.id)
             }
             this.search = ''
@@ -65,16 +64,14 @@
           this.selected = selected
         }
       }
+
     },
-    methods: {
+         methods: {
       ...mapActions({
-        setSelectedConsequences: 'setSelectedConsequences'
+        setSelectedSift: 'setSelectedSift'
       }),
-      changeColor (event) {
-        let index = event.target.id
-        let val = event.target.value
-        this.$store.commit('setConsequenceColor', {index, val})
-      }
-    }
+     
+     }
   }
+
 </script>
