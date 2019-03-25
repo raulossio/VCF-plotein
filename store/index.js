@@ -211,7 +211,7 @@ export const mutations = {
     setSpinner: (state, spinner) => { state.spinner = spinner },
     setVariant: (state, variant) => { state.variant = variant },
     setPhenotypes: (state, phenotype) => { state.phenotypes = phenotype },
-    setPopulations: (state, phenotype) => { state.phenotypes = phenotype },
+    setPopulations: (state, population) => { state.population = population },
     // Specific
     setNumVcfVars: (state, num_vcf_vars) => { state.info.num_vcf_vars = num_vcf_vars },
     setNumVcfSamples: (state, num_vcf_samples) => { state.info.num_vcf_samples = num_vcf_samples },
@@ -255,7 +255,6 @@ export const mutations = {
     setPolyphenPredictionsStatus: (state, { index, val }) => { state.polyphen_predictions[index].status = val },
 
     setPopulation: (state, variants) => {
-        debugger
         let population = {}
         let genes = variants.filter(v =>
             (v.hasOwnProperty(`gnomad_${state.version}_info`) && v[`gnomad_${state.version}_info`])
@@ -349,11 +348,11 @@ export const actions = {
                 console.timeEnd('fetchVarsAndCons')
 
                 commit('setVariants', obj.variants)
-
+                commit('setConsequences', obj.consequences)
                 commit('setSifts', obj.variants)
                 commit('setPolyphenPredictions', obj.variants)
                 commit('setPopulation', obj.variants)
-                commit('setConsequences', obj.consequences)
+               
             } catch (error) {
                 console.error('Error fetching variants', error)
             }
@@ -438,7 +437,7 @@ export const actions = {
         commit('setSpinner', true)
 
         console.time('goterms')
-        let goterms = await API.fetchGoterms(state.genes.map(g => g.name))
+        let goterms = await API.fetchGoterms(state.genes.map(g => g.name));
         console.timeEnd('goterms')
 
         commit('setGoterms', goterms)
@@ -449,11 +448,9 @@ export const actions = {
 
         commit('setSpinner', true)
 
-        console.time('phenotype')
+        console.time('phenotypes')
         let phenotype = await API.fetchPhenotype(state.genes.map(g => g.name))
-
-        console.timeEnd('phenotype')
-
+        console.timeEnd('phenotypes')
         commit('setPhenotypes', phenotype)
         commit('setSpinner', false)
     },
@@ -532,6 +529,9 @@ export const actions = {
         commit('setVariants', currentTranscript.variants)
         commit('setDomains', currentTranscript.domains)
         commit('setConsequences', currentTranscript.consequences)
+        commit('setSifts', currentTranscript.variants)
+        commit('setPolyphenPredictions', currentTranscript.variants)
+        commit('setPopulation', currentTranscript.variants)
     },
     async setDemoState({ state, commit, dispatch }) {
         commit('setSpinner', true)

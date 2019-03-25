@@ -33,8 +33,8 @@ export default {
       ...mapGetters({
           myFilter: 'genefilter/getFilter'
       }),
+
       filteredPheList() {
-    
         let fieldPhe =this.getPropertieField("phenotypes");
         let distinctPhe = this.marge(fieldPhe);
         let listPhe=this.toDictionary(distinctPhe)

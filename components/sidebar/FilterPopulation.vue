@@ -7,7 +7,7 @@
                 :min="population.min"
                 :max="population.max"
                 :step="population.step"
-                
+                ref="slider"
                 v-on:change="setCurrentValue($event)">
               </range-slider>
         </div>
@@ -39,9 +39,11 @@
           setPopulationValue: 'setRangePopulation'
         }),
         setCurrentValue(value){
-          debugger;
          this.setPopulationValue(value)
         }
+     },
+     mounted(){
+        this.$refs.slider.actualValue = this.myPopulation.value||this.$refs.slider.actualValue ;
      }
 }
 
