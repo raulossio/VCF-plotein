@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 import Api from '~/store/classes/Api'
-
 import * as VCFParser from '~/utilities/VCFParser'
 import * as GeneTree from '~/utilities/GeneTree'
 
@@ -13,27 +12,28 @@ const BASE_FILTERS = {
     gnomad: false
 }
 const BASE_STATE = {
-    // Main
-    file: null,
-    version: 37,
-    bookmark: { genes: {} },
-    info: {},
-    genes: [],
-    goterms: {},
-    transcripts: [],
-    phenotypes: [],
-    // Variants, domains and consequences
-    variants: [],
-    domains: [],
-    consequences: [],
-    sifts: [],
-    polyphen_predictions: [],
-    // Extra
-    variant: {},
-    spinner: false,
-    v_filters: Object.assign({}, BASE_FILTERS),
-}
-
+        // Main
+        file: null,
+        version: 37,
+        bookmark: { genes: {} },
+        info: {},
+        genes: [],
+        goterms: {},
+        transcripts: [],
+        phenotypes: [],
+        // Variants, domains and consequences
+        variants: [],
+        domains: [],
+        consequences: [],
+        sifts: [],
+        polyphen_predictions: [],
+        population: {},
+        // Extra
+        variant: {},
+        spinner: false,
+        v_filters: Object.assign({}, BASE_FILTERS),
+    }
+    //Utilities
 const sortByProteinPos = (a, b) => {
     return (a.aa_pos > b.aa_pos) - (a.aa_pos < b.aa_pos)
 }
@@ -44,6 +44,44 @@ const uniqueArrBy = (arr, key) => {
     return result
 }
 
+const countDecimals = (val) => {
+    if (Math.floor(val.valueOf()) === val.valueOf()) return 0;
+    return val.toString().split(".")[1].length || 0;
+}
+const noExponents = (val) => {
+    var data = String(val).split(/[eE]/);
+    if (data.length == 1) return data[0];
+
+    var z = '',
+        sign = val < 0 ? '-' : '',
+        str = data[0].replace('.', ''),
+        mag = Number(data[1]) + 1;
+
+    if (mag < 0) {
+        z = sign + '0.';
+        while (mag++) z += '0';
+        return z + str.replace(/^\-/, '');
+    }
+    mag -= str.length;
+    while (mag--) z += '0';
+    return str + z;
+}
+
+const minMax = (arr) => {
+    var minMaxArray = arr.reduce(function(r, n) {
+        r[0] = (!r[0]) ? n : Math.min(r[0], n);
+        r[1] = (!r[1]) ? n : Math.max(r[1], n);
+        return r;
+    }, []);
+
+    return minMaxArray;
+}
+const IsExponential = (val) => {
+    var r = /[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)/g
+    return String(val).match(r) !== null;
+}
+
+//Utilities
 export const state = () => (BASE_STATE)
 
 export const getters = {
@@ -63,6 +101,7 @@ export const getters = {
     getConsequences: (state) => (state.consequences),
     getSifts: (state) => (state.sifts),
     getPolyphenPredictions: (state) => (state.polyphen_predictions),
+    getPopulation: (state) => (state.population),
     getSpinner: (state) => (state.spinner),
     getVariant: (state) => (state.variant),
     // Filter
@@ -75,6 +114,9 @@ export const getters = {
 
         (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
         (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
+
+        (!v.hasOwnProperty(`gnomad_${state.version}_info`) || parseFloat(v[`gnomad_${state.version}_info`].match(/AF=([^;]+)/)[1]) <= getters.getPopulation.value) &&
+
 
         (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true) &&
         (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true) &&
@@ -169,6 +211,7 @@ export const mutations = {
     setSpinner: (state, spinner) => { state.spinner = spinner },
     setVariant: (state, variant) => { state.variant = variant },
     setPhenotypes: (state, phenotype) => { state.phenotypes = phenotype },
+    setPopulations: (state, phenotype) => { state.phenotypes = phenotype },
     // Specific
     setNumVcfVars: (state, num_vcf_vars) => { state.info.num_vcf_vars = num_vcf_vars },
     setNumVcfSamples: (state, num_vcf_samples) => { state.info.num_vcf_samples = num_vcf_samples },
@@ -176,7 +219,7 @@ export const mutations = {
     setDomainStatus: (state, { index, val }) => { state.domains[index].status = val },
     setDomainColor: (state, { index, val }) => { state.domains[index].color = val },
     setSifts: (state, variants) => {
-        debugger;
+
         let sifts = variants.filter(v =>
             (v.hasOwnProperty("sift_prediction") && v['sift_prediction'])
         );
@@ -194,7 +237,7 @@ export const mutations = {
     setSiftStatus: (state, { index, val }) => { state.sifts[index].status = val },
 
     setPolyphenPredictions: (state, variants) => {
-        debugger;
+
         let polyphen_prediction = variants.filter(v =>
             (v.hasOwnProperty("polyphen_prediction") && v['polyphen_prediction'])
         );
@@ -210,6 +253,28 @@ export const mutations = {
 
     },
     setPolyphenPredictionsStatus: (state, { index, val }) => { state.polyphen_predictions[index].status = val },
+
+    setPopulation: (state, variants) => {
+        debugger
+        let population = {}
+        let genes = variants.filter(v =>
+            (v.hasOwnProperty(`gnomad_${state.version}_info`) && v[`gnomad_${state.version}_info`])
+        );
+        let selectField = genes.map(g => {
+            return parseFloat(g[`gnomad_${state.version}_info`].match(/AF=([^;]+)/)[1])
+        });
+        let MargeFields = [].concat.apply([], selectField).sort();
+
+        var minMaxValue = minMax(MargeFields)
+        population['min'] = minMaxValue[0];
+        population['max'] = minMaxValue[1];
+        population['value'] = population.max;
+        population['step'] = noExponents(Math.pow(10, -countDecimals(population.min)))
+        state.population = population
+
+    },
+
+    setPopulationValue: (state, value) => { state.population.value = value },
 
     setConsequenceStatus: (state, { index, val }) => { state.consequences[index].status = val },
     setConsequenceColor: (state, { index, val }) => { state.consequences[index].color = val },
@@ -242,6 +307,7 @@ export const actions = {
         commit('setConsequences', [])
         commit('setSifts', [])
         commit('setPolyphenPredictions', [])
+        commit('setPopulations', {})
         commit('setVariant', {})
         commit('setSpinner', false)
         commit('clearFilters')
@@ -283,9 +349,10 @@ export const actions = {
                 console.timeEnd('fetchVarsAndCons')
 
                 commit('setVariants', obj.variants)
-                debugger
+
                 commit('setSifts', obj.variants)
                 commit('setPolyphenPredictions', obj.variants)
+                commit('setPopulation', obj.variants)
                 commit('setConsequences', obj.consequences)
             } catch (error) {
                 console.error('Error fetching variants', error)
@@ -343,6 +410,7 @@ export const actions = {
             }
         }
     },
+
     setSelectedPolyphenPredictions({ state, commit }, selected) {
         for (const [index, cons] of state.polyphen_predictions.entries()) {
             let val = selected.includes(cons.id)
@@ -350,6 +418,10 @@ export const actions = {
                 commit('setPolyphenPredictionsStatus', { index, val })
             }
         }
+    },
+
+    setRangePopulation({ state, commit }, value) {
+        commit('setPopulationValue', value)
     },
     setSelectedSamples({ getters, commit }, selected) {
         for (const sample of getters.getSamples) {
@@ -374,7 +446,7 @@ export const actions = {
     },
 
     async setPhenotypes({ state, commit }) {
-        debugger;
+
         commit('setSpinner', true)
 
         console.time('phenotype')

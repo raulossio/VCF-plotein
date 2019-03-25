@@ -49,7 +49,7 @@
           this.$store.commit('setFilterClinvar', newList.includes('clinvar'))
           this.$store.commit('setFilterCosmic', newList.includes('cosmic'))
           this.$store.commit('setFilterDbsnp', newList.includes('dbSnp'))
-          this.$store.commit('setFilterGnomad', newList.includes('gnomad'))
+          this.$store.commit('setFilterGnomad', newList.includes('gnomAD'))
           this.list = newList
         }
       },

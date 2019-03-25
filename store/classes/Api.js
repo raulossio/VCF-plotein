@@ -103,7 +103,7 @@ export default class Api {
     }
     fetchPhenotype(genes) {
         return new Promise(async(resolve, reject) => {
-            debugger;
+
             try {
                 let url = `${this.api_url}/phenotype`
                 let { data } = await axios.post(url, genes, { responseType: 'json', crossdomain: true })

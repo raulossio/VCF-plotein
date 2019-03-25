@@ -42,7 +42,7 @@
       }),
       selected: {
         get () {
-          debugger
+        
           let statusConsequences = this.myStatusConsequences.map(c=>c.id)
           return [...new Set(statusConsequences)]
         },

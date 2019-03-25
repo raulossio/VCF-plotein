@@ -34,7 +34,7 @@ export default {
           myFilter: 'genefilter/getFilter'
       }),
       filteredPheList() {
-        debugger;
+    
         let fieldPhe =this.getPropertieField("phenotypes");
         let distinctPhe = this.marge(fieldPhe);
         let listPhe=this.toDictionary(distinctPhe)

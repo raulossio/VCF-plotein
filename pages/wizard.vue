@@ -51,7 +51,7 @@
     },
     // Before app is fully loaded
     beforeMount () {
-      debugger;
+   
       this.clearAllData()
       if (this.$route.query && this.$route.query.demo) {
         this.setDemoState()

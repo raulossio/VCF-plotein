@@ -56,7 +56,7 @@
         myFilterType: 'genefilter/getType',
       }),
       filteredGeneList() {
-        debugger
+      
         let gene_list = this.myGenes.filter(gene => {
           return (gene.name.toLowerCase().includes(this.search.toLowerCase()) ||
             gene.id.toLowerCase().includes(this.search.toLowerCase()))

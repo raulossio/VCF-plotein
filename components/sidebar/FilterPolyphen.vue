@@ -38,22 +38,18 @@
       }),
       selected: {
         get () {
-          debugger
           let statusPolyPred = this.myStatusPolyPred.map(p=>p.id)
           return [...new Set(statusPolyPred)]
         },
         set (newList) {
-          debugger
             this.setSelectedPolyphenPredictions(newList)
         }
       },
       selectAll: {
         get () {
-          debugger
           return this.selected.length === this.myPolyPred.length
         },
         set (value) {
-          debugger 
          let selected = []
           if (value) {
             for (const cons of this.myPolyPred) {
@@ -66,12 +62,11 @@
       }
 
     },
-         methods: {
+    methods: {
       ...mapActions({
-        setSelectedPolyphenPredictions: 'setSelectedPolyphenPredictions'
-      }),
-     
-     }
+          setSelectedPolyphenPredictions: 'setSelectedPolyphenPredictions'
+      })
+    }
   }
 
 </script>

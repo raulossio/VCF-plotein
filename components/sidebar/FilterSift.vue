@@ -38,22 +38,22 @@
       }),
       selected: {
         get () {
-          debugger
+         
           let statusSifts = this.myStatusSifts.map(s=>s.id)
           return [...new Set(statusSifts)]
         },
         set (newList) {
-          debugger
+        
             this.setSelectedSift(newList)
         }
       },
       selectAll: {
         get () {
-          debugger
+      
           return this.selected.length === this.mysifts.length
         },
         set (value) {
-          debugger 
+        
          let selected = []
           if (value) {
             for (const cons of this.mysifts) {
