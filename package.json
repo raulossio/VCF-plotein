@@ -37,6 +37,8 @@
     "vue-faq-accordion": "^1.2.1",
     "vue-fullscreen": "^2.1.3",
     "vue-notification": "^1.3.16",
+    "vue-range": "^1.1.0",
+    "vue-range-slider": "^0.6.0",
     "vue-tour": "^1.1.0"
   },
   "devDependencies": {

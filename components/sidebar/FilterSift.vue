@@ -8,19 +8,19 @@
             <span class="custom-control-indicator"></span>
           </label>
         </th>
-        <th scope="col">Database</th>
+          <th scope="col">All SIFT categories</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="option in options" :key="option">
+      <tr v-for="sift in mysifts" :key="sift.id">
         <th scope="row" class="text-center">
           <label class="custom-control custom-checkbox">
-            <input type="checkbox" :value="option" v-model="selected" class="custom-control-input center">
+            <input type="checkbox" :value="sift.id" v-model="selected" class="custom-control-input center">
             <span class="custom-control-indicator"></span>
           </label>
         </th>
         <td>
-          {{option}}
+          {{sift.name}}
         </td>
       </tr>
     </tbody>
@@ -28,45 +28,50 @@
 </template>
 
 <script>
-  const options = [
-    'clinvar',
-    'cosmic',
-    'dbSnp',
-    'gnomAD'
-  ]
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
-    data: () => ({
-      options: options,
-      list: []
-    }),
     computed: {
+       ...mapGetters({
+        mysifts: 'getSifts',
+        myStatusSifts: 'getStatusSifts'
+      }),
       selected: {
         get () {
-          return this.list
+         
+          let statusSifts = this.myStatusSifts.map(s=>s.id)
+          return [...new Set(statusSifts)]
         },
         set (newList) {
-          this.$store.commit('setFilterClinvar', newList.includes('clinvar'))
-          this.$store.commit('setFilterCosmic', newList.includes('cosmic'))
-          this.$store.commit('setFilterDbsnp', newList.includes('dbSnp'))
-          this.$store.commit('setFilterGnomad', newList.includes('gnomAD'))
-          this.list = newList
+        
+            this.setSelectedSift(newList)
         }
       },
       selectAll: {
         get () {
-          return this.selected.length === this.options.length
+      
+          return this.selected.length === this.mysifts.length
         },
         set (value) {
-          let selected = []
+        
+         let selected = []
           if (value) {
-            for (const filter of this.options) {
-              selected.push(filter)
+            for (const cons of this.mysifts) {
+              selected.push(cons.id)
             }
+            this.search = ''
           }
           this.selected = selected
         }
       }
-    }
+
+    },
+         methods: {
+      ...mapActions({
+        setSelectedSift: 'setSelectedSift'
+      }),
+     
+     }
   }
+
 </script>

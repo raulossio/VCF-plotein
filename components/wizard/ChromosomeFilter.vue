@@ -45,7 +45,7 @@
         mySetFilter: 'genefilter/setFilter',
       }),
       setFilter (chromosome) {
-        debugger;
+    
         this.mySetFilter({filter: chromosome, type: 'chromosome'})
       }
     }

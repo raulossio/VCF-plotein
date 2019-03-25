@@ -8,19 +8,19 @@
             <span class="custom-control-indicator"></span>
           </label>
         </th>
-        <th scope="col">Database</th>
+          <th scope="col">All Polyphen categories</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="option in options" :key="option">
+      <tr v-for="PolyPred in myPolyPred" :key="PolyPred.id">
         <th scope="row" class="text-center">
           <label class="custom-control custom-checkbox">
-            <input type="checkbox" :value="option" v-model="selected" class="custom-control-input center">
+            <input type="checkbox" :value="PolyPred.id" v-model="selected" class="custom-control-input center">
             <span class="custom-control-indicator"></span>
           </label>
         </th>
         <td>
-          {{option}}
+          {{PolyPred.name}}
         </td>
       </tr>
     </tbody>
@@ -28,45 +28,45 @@
 </template>
 
 <script>
-  const options = [
-    'clinvar',
-    'cosmic',
-    'dbSnp',
-    'gnomAD'
-  ]
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
-    data: () => ({
-      options: options,
-      list: []
-    }),
     computed: {
+       ...mapGetters({
+        myPolyPred: 'getPolyphenPredictions',
+        myStatusPolyPred: 'getStatusPolyphenPredictions'
+      }),
       selected: {
         get () {
-          return this.list
+          let statusPolyPred = this.myStatusPolyPred.map(p=>p.id)
+          return [...new Set(statusPolyPred)]
         },
         set (newList) {
-          this.$store.commit('setFilterClinvar', newList.includes('clinvar'))
-          this.$store.commit('setFilterCosmic', newList.includes('cosmic'))
-          this.$store.commit('setFilterDbsnp', newList.includes('dbSnp'))
-          this.$store.commit('setFilterGnomad', newList.includes('gnomAD'))
-          this.list = newList
+            this.setSelectedPolyphenPredictions(newList)
         }
       },
       selectAll: {
         get () {
-          return this.selected.length === this.options.length
+          return this.selected.length === this.myPolyPred.length
         },
         set (value) {
-          let selected = []
+         let selected = []
           if (value) {
-            for (const filter of this.options) {
-              selected.push(filter)
+            for (const cons of this.myPolyPred) {
+              selected.push(cons.id)
             }
+            this.search = ''
           }
           this.selected = selected
         }
       }
+
+    },
+    methods: {
+      ...mapActions({
+          setSelectedPolyphenPredictions: 'setSelectedPolyphenPredictions'
+      })
     }
   }
+
 </script>

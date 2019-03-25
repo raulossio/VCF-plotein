@@ -16,7 +16,7 @@
       <goterms-filter v-else-if="cur.key === 'bio'" :list="bio" :title="cur.title" />
       <goterms-filter v-else-if="cur.key === 'mol'" :list="mol" :title="cur.title" />
       <goterms-filter v-else-if="cur.key === 'cel'" :list="cel" :title="cur.title" />
-      <goterms-filter v-else-if="cur.key === 'phe'" :list="phe" :title="cur.title" />
+      <phenotype-filter v-else-if="cur.key === 'phe'" :list="phe" :title="cur.title" />
       <p v-else>Error</p>
     </div>
   </base-titled-section>
@@ -27,6 +27,7 @@
 
   import ChromosomeFilter from '~/components/wizard/ChromosomeFilter'
   import GotermsFilter from '~/components/wizard/GotermsFilter'
+  import PhenotypeFilter from '~/components/wizard/PhenotypeFilter'
   import Spinner from '~/components/Spinner'
 
   const list = [
@@ -34,13 +35,14 @@
     {title: 'Biological process', key: 'bio'},
     {title: 'Molecular function', key: 'mol'},
     {title: 'Cellular component', key: 'cel'},
-    {title: 'Mock GO filter', key: 'phe'}
+    {title: 'Phenotype', key: 'phe'}
   ]
 
   export default {
     components: {
       ChromosomeFilter,
       GotermsFilter,
+      PhenotypeFilter,
       Spinner
     },
     data: () => ({
@@ -50,6 +52,7 @@
     }),
     computed: {
       ...mapGetters({
+        myPhenotypes: 'getPhenotypes',
         myGoterms: 'getGoterms',
         mySpinner: 'getSpinner',
       }),
@@ -62,12 +65,13 @@
       cel () {
         return this.myGoterms['cellular_component']
       },
-      phe () {
-        return this.myGoterms['phenotype']
-      } 
+      phe (){
+        return this.myPhenotypes;
+      }
     },
     methods: {
       ...mapActions({
+        setPhenotypes: 'setPhenotypes',
         setGoterms: 'setGoterms',
       }),
       setCurrent (item) {
@@ -75,6 +79,7 @@
         if (!this.fetchedGoterms) {
           this.fetchedGoterms = true
           this.setGoterms()
+          this.setPhenotypes()
         }
       }
     }

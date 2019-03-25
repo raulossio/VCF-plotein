@@ -45,7 +45,9 @@
           }
           this.myClearAllData()
           this.$store.commit('setFile', newFile)
-          if (this.myIsBookmark) this.mySetBookmarkContents
+          if (this.myIsBookmark) 
+            this.mySetBookmarkContents()
+            
           else this.mySetVcfContents().catch(this.vcfFileError)
         }
       }
