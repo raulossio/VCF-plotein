@@ -203,48 +203,53 @@ export default class Api {
 
     // HELPERS
 
-    async _obtainVarsConsInsDels(info, rest_vars) {
-        let variants = []
-        let consequences = []
-        let splice_variants = []
+    async _obtainVarsConsInsDels (info, rest_vars) {
+      let variants = []
+      let consequences = []
+      let splice_variants = []
+      let splice_variants_presence = 0
 
-        for (const v of rest_vars) {
-            if (!v.transcript_consequences) { continue }
-            for (const t of v.transcript_consequences) {
-                let original_var = this._obtainVariantFromInput(v.input)
-                let newVariant = this.extractor.parseVariant(original_var, t)
-                if (newVariant.ref.length < newVariant.alt.length) {
-                    newVariant.type = 'insertion'
-                } else if (newVariant.ref.length > newVariant.alt.length) {
-                    newVariant.type = 'deletion'
-                } else if (!newVariant.aa_pos &&
-                    newVariant.consequences.includes('splice_acceptor_variant')) {
-                    splice_variants.push(newVariant)
-                }
+      for (const v of rest_vars) {
+        if (!v.transcript_consequences) {continue}
+        for (const t of v.transcript_consequences) {
+          let original_var = this._obtainVariantFromInput(v.input)
+          let newVariant = this.extractor.parseVariant(original_var, t)
+          if (newVariant.ref.length < newVariant.alt.length) {
+            newVariant.type = 'insertion'
+          } else if (newVariant.ref.length > newVariant.alt.length) {
+            newVariant.type = 'deletion'
+          } else if (!newVariant.aa_pos
+              && newVariant.consequences.includes('splice_acceptor_variant')) {
+            splice_variants.push(newVariant)
+            //console.log('Voy a empujar Splice Variant' + newVariant)
+            splice_variants_presence = splice_variants_presence + 1
+          }
 
-                if (newVariant.aa_pos && newVariant.aa_change) {
-                    variants.push(newVariant)
-                    consequences.push(...t.consequence_terms)
-                    consequences = [...new Set(consequences)]
-                }
-            }
+          if (newVariant.aa_pos && newVariant.aa_change) {
+            variants.push(newVariant)
+            consequences.push(...t.consequence_terms)
+            consequences = [... new Set(consequences)]
+          }
         }
+      }
 
-        splice_variants = await this._fetchSplice(info, splice_variants)
-        console.log('splice variants:', splice_variants)
+  if (splice_variants_presence > 0){
+      splice_variants = await this._fetchSplice(info, splice_variants)
+        //console.log('RAUL splice variants:', splice_variants)
         variants.push(...splice_variants)
         splice_variants.forEach(v => {
-            v.aa_change = ''
-            consequences.push(...v.consequences)
-            consequences = [...new Set(consequences)]
-        })
+        v.aa_change = ''
+        consequences.push(...v.consequences)
+        consequences = [... new Set(consequences)]
+      })
+  }
 
-        let non_confidential = this.extractor.nonConfidentialInfo(variants)
-        let db_presence = await this._fetchDBPresence(non_confidential)
-        variants = this.extractor.mergeVariantsAndDb(variants, db_presence)
+      let non_confidential = this.extractor.nonConfidentialInfo(variants)
+      let db_presence = await this._fetchDBPresence(non_confidential)
+      variants = this.extractor.mergeVariantsAndDb(variants, db_presence)
 
-        consequences = this.extractor.parseConsequences(consequences)
-        return { variants, consequences }
+      consequences = this.extractor.parseConsequences(consequences)
+      return { variants, consequences }
     }
 
     _formatLines(vcf_vars) {
