@@ -24,8 +24,8 @@
  const list = [
     {title: 'Filter by consequences', key: 'consequences'},
     {title: 'Filter by clinical', key: 'clinical'},
-    {title: 'Filter by sift', key: 'sift'},
-    {title: 'Filter by polyphen prediction', key: 'polyphenPred'},
+    {title: 'Filter by SIFT prediction', key: 'sift'},
+    {title: 'Filter by PolyPhen prediction', key: 'polyphenPred'},
     {title: 'Filter by population', key: 'population'}
   ]
 
