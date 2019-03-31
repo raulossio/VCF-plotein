@@ -29,7 +29,7 @@
               </label>
             </td>
             <td :title="dom.name" data-toggle="tooltip" data-placement="top">
-              {{dom.family}}
+              <b>{{dom.family}}</b><br>{{dom.name}}
               <span class="muted">({{dom.start}}, {{dom.end}})</span>
             </td>
             <td>
