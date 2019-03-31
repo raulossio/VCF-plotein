@@ -3,7 +3,7 @@
     <div class="landing">
       <div class="landing-left text-center">
         <h1 class=" mt-3">VCF/Plotein</h1>
-        <h3 class="mt-0">A web application to facilitate the clinical interpretation of genetic and genomic variants from exome sequencing projects</h3>
+        <h3 class="mt-0">A web application to facilitate the clinical interpretation of genetic and genomic variants from exome sequencing projects.</h3>
       </div>
       <div class="landing-right">
         <b-img src="/bap1.png" alt="bap1.png" class="mr-3" style="width:100%;" />
