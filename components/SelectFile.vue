@@ -41,7 +41,7 @@
             buttonSkip: 'Skip tour',
             buttonPrevious: 'Previous',
             buttonNext: 'Next',
-            buttonStop: 'Ok'
+            buttonStop: 'Next',
           }
         },
         steps: [
