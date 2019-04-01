@@ -111,36 +111,28 @@ export const getters = {
     // Filter
     isBookmark: (state) => (state.file && state.file.name.endsWith('.json')),
     getStatusDomains: (state) => (state.domains.filter(d => d.status)),
-//     getPlottedVariants: (state, getters) => (state.variants.filter(v => (
-//         v.consequences.some(vc => getters.getStatusConsequencesNames.includes(vc)) &&
-//         // (!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(v.sift_prediction)) &&
-//         // (v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes("Not Available")) &&
-//
-//        // (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
-//         // (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
-//     //
-//         (!v.hasOwnProperty(`gnomad_${state.version}_info`) || parseFloat(v[`gnomad_${state.version}_info`].match(/AF=([^;]+)/)[1]) <= getters.getPopulation.value) &&
-// //<<<<<<< HEAD
-//     //
-//     //
-// //=======
-//
-//         getters.getSearchableVariantsName.includes(`${v.aa_pos}_${v.aa_change || "-"}`) &&
-//
-//
-// //>>>>>>> b77cfe25d0b438a16549922ae4926a60628adddd
-//         (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true) &&
-//         (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true) &&
-//         (getters.getFilterDbsnp ? v[`dbSnp_${state.version}`] : true) &&
-//         (getters.getFilterGnomad ? v[`gnomad_${state.version}`] : true)
-//     ))),
     getPlottedVariants: (state, getters) => (state.variants.filter(v => (
-      v.consequences.some(vc => getters.getStatusConsequencesNames.includes(vc))
-      && (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true)
-      && (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true)
-      && (getters.getFilterDbsnp ? v[`dbSnp_${state.version}`] : true)
-      && (getters.getFilterGnomad ? v[`gnomad_${state.version}`] : true)
+        v.consequences.some(vc => getters.getStatusConsequencesNames.includes(vc)) &&
+        (!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(v.sift_prediction)) &&
+        (v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes("Not Available")) &&
+
+       (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
+        (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
+        (!v.hasOwnProperty(`gnomad_${state.version}_info`) || parseFloat(v[`gnomad_${state.version}_info`].match(/AF=([^;]+)/)[1]) <= getters.getPopulation.value) &&
+
+        getters.getSearchableVariantsName.includes(`${v.aa_pos}_${v.aa_change || "-"}`) &&
+        (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true) &&
+        (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true) &&
+        (getters.getFilterDbsnp ? v[`dbSnp_${state.version}`] : true) &&
+        (getters.getFilterGnomad ? v[`gnomad_${state.version}`] : true)
     ))),
+    // getPlottedVariants: (state, getters) => (state.variants.filter(v => (
+    //   v.consequences.some(vc => getters.getStatusConsequencesNames.includes(vc))
+    //   && (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true)
+    //   && (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true)
+    //   && (getters.getFilterDbsnp ? v[`dbSnp_${state.version}`] : true)
+    //   && (getters.getFilterGnomad ? v[`gnomad_${state.version}`] : true)
+    // ))),
     getStatusVariants: (state, getters) => (getters.getPlottedVariants.filter(v => (
         (getters.getSamples.length ?
             v.samples.some(s => getters.getStatusSamples.map(d => d.id).includes(s.id)) :
