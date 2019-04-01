@@ -70,6 +70,11 @@ export default class Extractor {
 
   parseVariant (v, t) {
     this._assertProperties(this, ['samplesOf', 'counter'])
+    //console.log("CHROM " + v.chr)
+    //console.log("POS " + v.pos)
+    //console.log("IMPACT " + t.impact)
+    //console.log("POLYPHEN " + t.polyphen_prediction)
+    //console.log("MAXENT " + t.maxentscan_ref)
     return {
       id: ++this.counter,
       chr: v.chr,
@@ -84,6 +89,9 @@ export default class Extractor {
       sift_prediction: t.sift_prediction,
       polyphen_score: t.polyphen_score,
       polyphen_prediction: t.polyphen_prediction,
+      maxentscan_ref: t.maxentscan_ref,
+      maxentscan_alt: t.maxentscan_alt,
+      maxentscan_diff: t.maxentscan_diff,
       samples: this._validSamples(this.samplesOf[this._variantToString(v)]),
       type: 'variant'
     }
