@@ -31,6 +31,7 @@ const BASE_STATE = {
         // Extra
         variant: {},
         spinner: false,
+        demo: false,
         v_filters: Object.assign({}, BASE_FILTERS),
     }
     //Utilities
@@ -103,26 +104,34 @@ export const getters = {
     getPolyphenPredictions: (state) => (state.polyphen_predictions),
     getPopulation: (state) => (state.population),
     getSpinner: (state) => (state.spinner),
+    getDemo: (state) => (state.demo),
     getVariant: (state) => (state.variant),
     // Filter
     isBookmark: (state) => (state.file && state.file.name.endsWith('.json')),
     getStatusDomains: (state) => (state.domains.filter(d => d.status)),
     getPlottedVariants: (state, getters) => (state.variants.filter(v => (
         v.consequences.some(vc => getters.getStatusConsequencesNames.includes(vc)) &&
-        (!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(v.sift_prediction)) &&
-        (v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes("Not Available")) &&
+        // (!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(v.sift_prediction)) &&
+        // (v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes("Not Available")) &&
 
-        (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
-        (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
-
+       // (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
+        // (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
+    //
         (!v.hasOwnProperty(`gnomad_${state.version}_info`) || parseFloat(v[`gnomad_${state.version}_info`].match(/AF=([^;]+)/)[1]) <= getters.getPopulation.value) &&
-
-
+    //
+    //
         (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true) &&
         (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true) &&
         (getters.getFilterDbsnp ? v[`dbSnp_${state.version}`] : true) &&
         (getters.getFilterGnomad ? v[`gnomad_${state.version}`] : true)
     ))),
+    // getPlottedVariants: (state, getters) => (state.variants.filter(v => (
+    //   v.consequences.some(vc => getters.getStatusConsequencesNames.includes(vc))
+    //   && (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true)
+    //   && (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true)
+    //   && (getters.getFilterDbsnp ? v[`dbSnp_${state.version}`] : true)
+    //   && (getters.getFilterGnomad ? v[`gnomad_${state.version}`] : true)
+    // ))),
     getStatusVariants: (state, getters) => (getters.getPlottedVariants.filter(v => (
         (getters.getSamples.length ?
             v.samples.some(s => getters.getStatusSamples.map(d => d.id).includes(s.id)) :
@@ -209,6 +218,7 @@ export const mutations = {
     setConsequences: (state, consequences) => { state.consequences = consequences },
 
     setSpinner: (state, spinner) => { state.spinner = spinner },
+    setDemo: (state, demo) => {state.demo = demo},
     setVariant: (state, variant) => { state.variant = variant },
     setPhenotypes: (state, phenotype) => { state.phenotypes = phenotype },
     setPopulations: (state, population) => { state.population = population },
@@ -297,6 +307,7 @@ export const actions = {
         commit('setPhenotypes', [])
         commit('setInfo', {})
         commit('setTranscripts', [])
+        commit('setDemo', false)
 
         dispatch('clearAllGene')
     },
@@ -352,7 +363,7 @@ export const actions = {
                 commit('setSifts', obj.variants)
                 commit('setPolyphenPredictions', obj.variants)
                 commit('setPopulation', obj.variants)
-               
+
             } catch (error) {
                 console.error('Error fetching variants', error)
             }
@@ -541,4 +552,7 @@ export const actions = {
         dispatch('setBookmarkContents', demoContents)
         commit('setSpinner', false)
     },
+    setDemoValue({state, commit}){
+      commit('setDemo', true)
+    }
 }

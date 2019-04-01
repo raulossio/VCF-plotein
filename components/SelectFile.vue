@@ -1,12 +1,14 @@
 <template>
   <base-titled-section title="Open VCF or Bookmark">
-    <b-file v-model="file"
-      :state="Boolean(file)"
-      accept=".vcf,.gz,.json"
-      placeholder="Browse files..."
-      class="drag-drop d-flex align-items-stretch">
-      <p>Drag your files here or click in this area.</p>
-    </b-file>
+    <div id="v-step-0">
+      <b-file v-model="file"
+        :state="Boolean(file)"
+        accept=".vcf,.gz,.json"
+        placeholder="Browse files..."
+        class="drag-drop d-flex align-items-stretch">
+        <p>Drag your files here or click in this area.</p>
+      </b-file>
+  </div>
     <div class="mt-3">
       Selected file:<br>
       <span class="font-weight-bold">
@@ -20,6 +22,9 @@
         Human assembly {{myVersion === 37 ? 'GRCh37 (hg 19)' : 'GRCh38'}}
       </span>
     </p>
+    <div>
+      <v-tour name="myTour" :steps="steps" :options="myOptions"></v-tour>
+  </div>
   </base-titled-section>
 </template>
 
@@ -27,12 +32,44 @@
   import { mapGetters, mapActions, map } from 'vuex'
 
   export default {
+    name: 'my-tour',
+    data () {
+      return {
+        myOptions: {
+          useKeyboardNavigation: false,
+          labels: {
+            buttonSkip: 'Skip tour',
+            buttonPrevious: 'Previous',
+            buttonNext: 'Next',
+            buttonStop: 'Ok'
+          }
+        },
+        steps: [
+          {
+            target: '#v-step-0',  // We're using document.querySelector() under the hood
+            content: `Select the VCF file you want to visualise. It can be compressed or uncompressed`
+             // params: {
+             //   placement: 'top'
+             // }
+          }
+        ]
+      }
+    },
+    mounted: function () {
+      console.log('VALOR ' + this.myDemo);
+
+      if (this.myDemo === true){
+        this.$tours['myTour'].start();
+        console.log('MY DEMO VALUE ES TRUE');
+      }
+    },
     computed: {
       ...mapGetters({
         myFile: 'getFile',
         myGenes: 'getGenes',
         myVersion: 'getVersion',
         myIsBookmark: 'isBookmark',
+        myDemo: 'getDemo',
       }),
       file: {
         get () {
@@ -45,9 +82,9 @@
           }
           this.myClearAllData()
           this.$store.commit('setFile', newFile)
-          if (this.myIsBookmark) 
+          if (this.myIsBookmark)
             this.mySetBookmarkContents()
-            
+
           else this.mySetVcfContents().catch(this.vcfFileError)
         }
       }
