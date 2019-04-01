@@ -39,6 +39,14 @@
       <VueFaqAccordion :items="myItems"/>
     </div>
     <div>
+        <section>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+        </section>
     </div>
   </div>
 

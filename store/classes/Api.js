@@ -139,6 +139,7 @@ export default class Api {
                 while (lines.length > 0) {
                     let chunk = lines.splice(0, this.chunk_size)
                     let post_content = {
+                        MaxEntScan: true,
                         variants: chunk,
                         transcript_id: info.transcript_id
                     }
@@ -158,9 +159,23 @@ export default class Api {
         return new Promise(async(resolve, reject) => {
             try {
                 let url = `${this.ensembl_url}/vep/homo_sapiens/region`
-                let { data } = await axios.post(url, post_content, { responseType: 'json', crossdomain: true })
+                let { data } = await axios.post(url, post_content, { responseType: 'json', crossdomain: true, MaxEntScan: true})
                 resolve(data)
-            } catch (err) {
+            }
+            // try {
+            //     let urll = `${this.ensembl_url}/vep/homo_sapiens/region`
+            //     let { data } = await axios({
+            //       method: 'post',
+            //       url: 'urll',
+            //       data: {
+            //         {
+            //         	"variants" : ["3 52408607 . C T . . ." ] }
+            //       }
+            //     });
+            //     console.log(data)
+            //     resolve(data)
+            // }
+            catch (err) {
                 reject(err)
             }
         })
@@ -192,7 +207,7 @@ export default class Api {
                     gene_id: info.id,
                     version: this.version,
                 }
-                let { data } = await axios.post(url, post_content, { responseType: 'json', crossdomain: true })
+                let { data } = await axios.post(url, post_content, { responseType: 'json', crossdomain: true})
                 resolve(data)
             } catch (err) {
                 console.warn(err)
@@ -208,7 +223,6 @@ export default class Api {
       let consequences = []
       let splice_variants = []
       let splice_variants_presence = 0
-
       for (const v of rest_vars) {
         if (!v.transcript_consequences) {continue}
         for (const t of v.transcript_consequences) {
@@ -221,10 +235,8 @@ export default class Api {
           } else if (!newVariant.aa_pos
               && newVariant.consequences.includes('splice_acceptor_variant')) {
             splice_variants.push(newVariant)
-            //console.log('Voy a empujar Splice Variant' + newVariant)
             splice_variants_presence = splice_variants_presence + 1
           }
-
           if (newVariant.aa_pos && newVariant.aa_change) {
             variants.push(newVariant)
             consequences.push(...t.consequence_terms)

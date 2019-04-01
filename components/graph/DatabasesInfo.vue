@@ -29,6 +29,16 @@
             </p>
           </div>
         </div>
+        <div class="expand-items">
+          <div>
+            <p class="subtitle">MaxEntScan Reference</p>
+            <p>{{myVariant.maxentscan_ref || '-'}}</p>
+            <p class="subtitle">MaxEntScan Alternative</p>
+            <p>{{myVariant.maxentscan_alt || '-'}}</p>
+            <p class="subtitle">MaxEntScan Difference</p>
+            <p>{{myVariant.maxentscan_diff || '-'}}</p>
+          </div>
+        </div>
       </div>
     </div>
 
