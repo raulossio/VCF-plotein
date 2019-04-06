@@ -117,13 +117,13 @@ export const getters = {
         //(!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(undefined)) &&
         (v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes("Not Available")) &&
 
-<<<<<<< HEAD
+// <<<<<<< HEAD
        (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
-=======
-        (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
-        //(!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(undefined)) &&
->>>>>>> 35f72dfd44aeadae5acd24895ee6e04685cbb8c9
-        (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
+// =======
+//      (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
+//         //(!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(undefined)) &&
+// >>>>>>> 35f72dfd44aeadae5acd24895ee6e04685cbb8c9
+      //  (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
         (!v.hasOwnProperty(`gnomad_${state.version}_info`) || parseFloat(v[`gnomad_${state.version}_info`].match(/AF=([^;]+)/)[1]) <= getters.getPopulation.value) &&
 
         getters.getSearchableVariantsName.includes(`${v.aa_pos}_${v.aa_change || "-"}`) &&

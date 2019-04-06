@@ -73,10 +73,10 @@
     }),
     mounted: function () {
       // console.log('VALOR ' + this.myDemo);
-      if (this.myDemo === true){
-        this.$tours['myTour'].start();
-      //   console.log('MY DEMO VALUE ES TRUE');
-       }
+      // if (this.myDemo === true){
+      //   this.$tours['myTour'].start();
+      // //   console.log('MY DEMO VALUE ES TRUE');
+      //  }
     },
     computed: {
       ...mapGetters({
