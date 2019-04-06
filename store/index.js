@@ -27,10 +27,12 @@ const BASE_STATE = {
         consequences: [],
         sifts: [],
         polyphen_predictions: [],
+        searchable_variants: [],
         population: {},
         // Extra
         variant: {},
         spinner: false,
+        demo: false,
         v_filters: Object.assign({}, BASE_FILTERS),
     }
     //Utilities
@@ -101,8 +103,10 @@ export const getters = {
     getConsequences: (state) => (state.consequences),
     getSifts: (state) => (state.sifts),
     getPolyphenPredictions: (state) => (state.polyphen_predictions),
+    getSearchableVariants: (state) => (state.searchable_variants),
     getPopulation: (state) => (state.population),
     getSpinner: (state) => (state.spinner),
+    getDemo: (state) => (state.demo),
     getVariant: (state) => (state.variant),
     // Filter
     isBookmark: (state) => (state.file && state.file.name.endsWith('.json')),
@@ -110,19 +114,31 @@ export const getters = {
     getPlottedVariants: (state, getters) => (state.variants.filter(v => (
         v.consequences.some(vc => getters.getStatusConsequencesNames.includes(vc)) &&
         (!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(v.sift_prediction)) &&
+        //(!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(undefined)) &&
         (v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes("Not Available")) &&
 
-        (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
-        (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
-
+// <<<<<<< HEAD
+       (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
+// =======
+//      (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
+//         //(!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(undefined)) &&
+// >>>>>>> 35f72dfd44aeadae5acd24895ee6e04685cbb8c9
+      //  (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
         (!v.hasOwnProperty(`gnomad_${state.version}_info`) || parseFloat(v[`gnomad_${state.version}_info`].match(/AF=([^;]+)/)[1]) <= getters.getPopulation.value) &&
 
-
+        getters.getSearchableVariantsName.includes(`${v.aa_pos}_${v.aa_change || "-"}`) &&
         (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true) &&
         (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true) &&
         (getters.getFilterDbsnp ? v[`dbSnp_${state.version}`] : true) &&
         (getters.getFilterGnomad ? v[`gnomad_${state.version}`] : true)
     ))),
+    // getPlottedVariants: (state, getters) => (state.variants.filter(v => (
+    //   v.consequences.some(vc => getters.getStatusConsequencesNames.includes(vc))
+    //   && (getters.getFilterClinvar ? v[`clinvar_${state.version}`] : true)
+    //   && (getters.getFilterCosmic ? v[`cosmic_${state.version}`] : true)
+    //   && (getters.getFilterDbsnp ? v[`dbSnp_${state.version}`] : true)
+    //   && (getters.getFilterGnomad ? v[`gnomad_${state.version}`] : true)
+    // ))),
     getStatusVariants: (state, getters) => (getters.getPlottedVariants.filter(v => (
         (getters.getSamples.length ?
             v.samples.some(s => getters.getStatusSamples.map(d => d.id).includes(s.id)) :
@@ -131,6 +147,9 @@ export const getters = {
     ))),
     getStatusConsequences: (state) => (state.consequences.filter(c => c.status)),
     getStatusConsequencesNames: (state, getters) => (getters.getStatusConsequences.map(c => c.name)),
+
+    getStatusSearchableVariants: (state) => (state.searchable_variants.filter(c => c.status)),
+    getSearchableVariantsName: (state, getters) => (getters.getStatusSearchableVariants.map(c => c.name)),
 
     getStatusSifts: (state) => (state.sifts.filter(c => c.status)),
     getStatusSiftsName: (state, getters) => (getters.getStatusSifts.map(c => c.name)),
@@ -145,6 +164,7 @@ export const getters = {
         variants: getters.getVariants,
         domains: getters.getDomains,
         consequences: getters.getConsequences,
+        searchable_variants: getters.searchable_variants,
         sifts: getters.getSifts,
         polyphen_predictions: getters.getPolyphenPredictions
     }),
@@ -209,6 +229,7 @@ export const mutations = {
     setConsequences: (state, consequences) => { state.consequences = consequences },
 
     setSpinner: (state, spinner) => { state.spinner = spinner },
+    setDemo: (state, demo) => {state.demo = demo},
     setVariant: (state, variant) => { state.variant = variant },
     setPhenotypes: (state, phenotype) => { state.phenotypes = phenotype },
     setPopulations: (state, population) => { state.population = population },
@@ -226,6 +247,10 @@ export const mutations = {
         let selectField = sifts.map(s => s["sift_prediction"]);
         let MargeFields = [].concat.apply([], selectField);
         if (variants.length > sifts.length) {
+            if (!(state.file && state.file.name.endsWith('.json'))) {
+                MargeFields.push(undefined)
+            }
+
             MargeFields.push("Not Available")
         }
         let dictionarySifts = [...new Set(MargeFields)];
@@ -236,6 +261,26 @@ export const mutations = {
     },
     setSiftStatus: (state, { index, val }) => { state.sifts[index].status = val },
 
+    setSearchableVariants: (state, variants) => {
+
+        let id = 0;
+        let variantsToSearch = variants.map(s => {
+            return {
+                id: id++,
+                name: `${s['aa_pos']}_${s['aa_change'] || "-" }`,
+                data: {
+                    aa_change: s['aa_change'] || "-",
+                    aa_pos: s['aa_pos'],
+                    consequences: s["consequences"].join(",")
+                },
+                status: true
+            }
+        })
+
+        state.searchable_variants = variantsToSearch;
+    },
+    setSearchableVariantsStatus: (state, { index, val }) => { state.searchable_variants[index].status = val },
+
     setPolyphenPredictions: (state, variants) => {
 
         let polyphen_prediction = variants.filter(v =>
@@ -244,6 +289,10 @@ export const mutations = {
         let selectField = polyphen_prediction.map(s => s["polyphen_prediction"]);
         let MargeFields = [].concat.apply([], selectField);
         if (variants.length > polyphen_prediction.length) {
+            if (!(state.file && state.file.name.endsWith('.json'))) {
+                MargeFields.push(undefined)
+            }
+
             MargeFields.push("Not Available")
         }
         let dictionaryPolyphenPredictions = [...new Set(MargeFields)];
@@ -273,6 +322,8 @@ export const mutations = {
 
     },
 
+
+
     setPopulationValue: (state, value) => { state.population.value = value },
 
     setConsequenceStatus: (state, { index, val }) => { state.consequences[index].status = val },
@@ -297,6 +348,7 @@ export const actions = {
         commit('setPhenotypes', [])
         commit('setInfo', {})
         commit('setTranscripts', [])
+        commit('setDemo', false)
 
         dispatch('clearAllGene')
     },
@@ -305,6 +357,7 @@ export const actions = {
         commit('setDomains', [])
         commit('setConsequences', [])
         commit('setSifts', [])
+        commit('setSearchableVariants', [])
         commit('setPolyphenPredictions', [])
         commit('setPopulations', {})
         commit('setVariant', {})
@@ -335,6 +388,7 @@ export const actions = {
         commit('setDomains', await API.fetchDomains(info))
 
         VCFParser.readVCFVariants(state.file, gene).then(async(vcf_vars) => {
+
             if (vcf_vars.length === 0) {
                 console.log('vcf_vars length is 0')
                 return
@@ -350,10 +404,13 @@ export const actions = {
                 commit('setVariants', obj.variants)
                 commit('setConsequences', obj.consequences)
                 commit('setSifts', obj.variants)
+                commit('setSearchableVariants', obj.variants)
+
                 commit('setPolyphenPredictions', obj.variants)
                 commit('setPopulation', obj.variants)
-               
+
             } catch (error) {
+
                 console.error('Error fetching variants', error)
             }
             commit('setSpinner', false)
@@ -406,6 +463,16 @@ export const actions = {
             let val = selected.includes(cons.id)
             if (cons.status !== val) {
                 commit('setSiftStatus', { index, val })
+            }
+        }
+    },
+
+    setSelectedSearchableVariants({ state, commit }, selected) {
+
+        for (const [index, cons] of state.searchable_variants.entries()) {
+            let val = selected.includes(cons.id)
+            if (cons.status !== val) {
+                commit('setSearchableVariantsStatus', { index, val })
             }
         }
     },
@@ -530,6 +597,7 @@ export const actions = {
         commit('setDomains', currentTranscript.domains)
         commit('setConsequences', currentTranscript.consequences)
         commit('setSifts', currentTranscript.variants)
+        commit('setSearchableVariants', currentTranscript.variants)
         commit('setPolyphenPredictions', currentTranscript.variants)
         commit('setPopulation', currentTranscript.variants)
     },
@@ -540,5 +608,6 @@ export const actions = {
         commit('setVersion', demoContents.version)
         dispatch('setBookmarkContents', demoContents)
         commit('setSpinner', false)
-    },
+        commit('setDemo', true)
+    }
 }

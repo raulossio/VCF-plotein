@@ -20,7 +20,7 @@
           </label>
         </th>
         <td>
-          {{sift.name}}
+          {{ (!myIsBookmark) ? sift.name === undefined ? "undefined" :  sift.name :  sift.name  }}
         </td>
       </tr>
     </tbody>
@@ -34,6 +34,7 @@
     computed: {
        ...mapGetters({
         mysifts: 'getSifts',
+        myIsBookmark: 'isBookmark',
         myStatusSifts: 'getStatusSifts'
       }),
       selected: {

@@ -10,6 +10,7 @@
         <filter-sift v-else-if="item.key === 'sift'" />
         <filter-polyphen v-else-if="item.key === 'polyphenPred'" />
         <filter-population v-else-if="item.key === 'population'" />
+        <filter-variants-searcher v-else-if="item.key === 'variant'" />
       </b-card-body>
     </b-card>
   </base-titled-section>
@@ -21,12 +22,14 @@
   import FilterSift from '~/components/sidebar/FilterSift'
   import FilterPolyphen from '~/components/sidebar/FilterPolyphen'
   import FilterPopulation from '~/components/sidebar/FilterPopulation'
+  import FilterVariantsSearcher from '~/components/sidebar/FilterVariantsSearcher'
  const list = [
     {title: 'Filter by consequences', key: 'consequences'},
     {title: 'Filter by clinical', key: 'clinical'},
     {title: 'Filter by SIFT prediction', key: 'sift'},
     {title: 'Filter by PolyPhen prediction', key: 'polyphenPred'},
-    {title: 'Filter by population', key: 'population'}
+    {title: 'Filter by population', key: 'population'},
+    {title: 'Filter by variant', key: 'variant'}
   ]
 
   export default {
@@ -35,7 +38,8 @@
       FilterClinical,
       FilterSift,
       FilterPolyphen,
-      FilterPopulation
+      FilterPopulation,
+      FilterVariantsSearcher
     },
     data: () => ({
       list: list

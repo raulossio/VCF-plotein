@@ -3,6 +3,7 @@
     <p class="muted mb-0" v-if="myFilter">
       Filtered by {{myFilterType}} ({{myFilter}})
     </p>
+  <div id="v-step-0">
     <b-form-input
     type="text"
     v-model.trim="search"
@@ -22,12 +23,17 @@
         </b-link>
       </template>
     </b-table>
+  </div>
     <b-pagination class="justify-content-center pb-5"
       v-show="filteredGeneList.length > perPage"
       :total-rows="filteredGeneList.length"
       :per-page="perPage"
       v-model="currentPage" />
+      <div>
+     <v-tour name="myTour" :steps="steps" :options="myOptions"></v-tour>
+   </div>
   </base-titled-section>
+
 </template>
 
 <script>
@@ -45,8 +51,30 @@
     data: () => ({
       search: "",
       fields: fields,
-      currentPage: 1
+      currentPage: 1,
+      myOptions: {
+          useKeyboardNavigation: false,
+          labels: {
+            buttonSkip: 'Skip tour',
+            buttonPrevious: 'Previous',
+            buttonNext: 'Next',
+            buttonStop: 'Ok'
+          }
+        },
+        steps: [
+          {
+            target: '#v-step-0',  // We're using document.querySelector() under the hood
+            content: `Now select a gene and the application will take you automatically to the graph page`
+          }
+        ]
     }),
+    mounted: function () {
+      // console.log('VALOR ' + this.myDemo);
+      // if (this.myDemo === true){
+      //   this.$tours['myTour'].start();
+      // //   console.log('MY DEMO VALUE ES TRUE');
+      //  }
+    },
     computed: {
       ...mapGetters({
         myGenes: 'getGenes',
@@ -54,9 +82,10 @@
         myPhenotypes: 'getPhenotypes',
         myFilter: 'genefilter/getFilter',
         myFilterType: 'genefilter/getType',
+        myDemo: 'getDemo',
       }),
       filteredGeneList() {
-      
+
         let gene_list = this.myGenes.filter(gene => {
           return (gene.name.toLowerCase().includes(this.search.toLowerCase()) ||
             gene.id.toLowerCase().includes(this.search.toLowerCase()))

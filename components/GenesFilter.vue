@@ -1,5 +1,6 @@
 <template>
   <base-titled-section title="Filter genes" role="tablist">
+    <div id="v-step-0">
     <b-nav pills class="nav-pills">
       <b-nav-item v-for="item in list"
         :active="cur.key === item.key"
@@ -10,6 +11,7 @@
         {{item.title}}
       </b-nav-item>
     </b-nav>
+  </div>
     <div class="pt-3">
       <chromosome-filter v-if="cur.key === 'chr'" />
       <spinner v-else-if="mySpinner" />
@@ -19,6 +21,9 @@
       <phenotype-filter v-else-if="cur.key === 'phe'" :list="phe" :title="cur.title" />
       <p v-else>Error</p>
     </div>
+    <div>
+   <v-tour name="myTour" :steps="steps" :options="myOptions"></v-tour>
+ </div>
   </base-titled-section>
 </template>
 
@@ -45,16 +50,40 @@
       PhenotypeFilter,
       Spinner
     },
+
     data: () => ({
       list: list,
       cur: list[0],
       fetchedGoterms: false,
+      myOptions: {
+          useKeyboardNavigation: false,
+          labels: {
+            buttonSkip: 'Skip tour',
+            buttonPrevious: 'Previous',
+            buttonNext: 'Next',
+            buttonStop: 'Ok'
+          }
+        },
+        steps: [
+          {
+            target: '#v-step-0',  // We're using document.querySelector() under the hood
+            content: `Here you can select a filter to help you decide which gene you want to visualise first`
+          }
+        ]
     }),
+    mounted: function () {
+      // console.log('VALOR ' + this.myDemo);
+      // if (this.myDemo === true){
+      //   this.$tours['myTour'].start();
+      // //   console.log('MY DEMO VALUE ES TRUE');
+      //  }
+    },
     computed: {
       ...mapGetters({
         myPhenotypes: 'getPhenotypes',
         myGoterms: 'getGoterms',
         mySpinner: 'getSpinner',
+        myDemo: 'getDemo',
       }),
       bio () {
         return this.myGoterms['biological_process']
