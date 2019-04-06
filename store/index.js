@@ -114,9 +114,15 @@ export const getters = {
     getPlottedVariants: (state, getters) => (state.variants.filter(v => (
         v.consequences.some(vc => getters.getStatusConsequencesNames.includes(vc)) &&
         (!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(v.sift_prediction)) &&
+        //(!v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes(undefined)) &&
         (v.hasOwnProperty("sift_prediction") || getters.getStatusSiftsName.includes("Not Available")) &&
 
+<<<<<<< HEAD
        (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
+=======
+        (!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(v.polyphen_prediction)) &&
+        //(!v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes(undefined)) &&
+>>>>>>> 35f72dfd44aeadae5acd24895ee6e04685cbb8c9
         (v.hasOwnProperty("polyphen_prediction") || getters.getStatusPolyphenPredictionsName.includes("Not Available")) &&
         (!v.hasOwnProperty(`gnomad_${state.version}_info`) || parseFloat(v[`gnomad_${state.version}_info`].match(/AF=([^;]+)/)[1]) <= getters.getPopulation.value) &&
 
@@ -241,6 +247,10 @@ export const mutations = {
         let selectField = sifts.map(s => s["sift_prediction"]);
         let MargeFields = [].concat.apply([], selectField);
         if (variants.length > sifts.length) {
+            if (!(state.file && state.file.name.endsWith('.json'))) {
+                MargeFields.push(undefined)
+            }
+
             MargeFields.push("Not Available")
         }
         let dictionarySifts = [...new Set(MargeFields)];
@@ -279,6 +289,10 @@ export const mutations = {
         let selectField = polyphen_prediction.map(s => s["polyphen_prediction"]);
         let MargeFields = [].concat.apply([], selectField);
         if (variants.length > polyphen_prediction.length) {
+            if (!(state.file && state.file.name.endsWith('.json'))) {
+                MargeFields.push(undefined)
+            }
+
             MargeFields.push("Not Available")
         }
         let dictionaryPolyphenPredictions = [...new Set(MargeFields)];
@@ -374,6 +388,7 @@ export const actions = {
         commit('setDomains', await API.fetchDomains(info))
 
         VCFParser.readVCFVariants(state.file, gene).then(async(vcf_vars) => {
+
             if (vcf_vars.length === 0) {
                 console.log('vcf_vars length is 0')
                 return
@@ -395,6 +410,7 @@ export const actions = {
                 commit('setPopulation', obj.variants)
 
             } catch (error) {
+
                 console.error('Error fetching variants', error)
             }
             commit('setSpinner', false)

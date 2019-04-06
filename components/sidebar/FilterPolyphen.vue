@@ -20,7 +20,7 @@
           </label>
         </th>
         <td>
-          {{PolyPred.name}}
+             {{ (!myIsBookmark) ? PolyPred.name === undefined ? "undefined" :  PolyPred.name :  PolyPred.name  }}
         </td>
       </tr>
     </tbody>
@@ -34,6 +34,7 @@
     computed: {
        ...mapGetters({
         myPolyPred: 'getPolyphenPredictions',
+        myIsBookmark: 'isBookmark',
         myStatusPolyPred: 'getStatusPolyphenPredictions'
       }),
       selected: {
