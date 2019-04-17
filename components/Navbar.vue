@@ -25,12 +25,13 @@
           </b-nav-item>
           <b-nav-item @click="toggleFlipped">
             <i class="fa fa-code-branch" v-if="myFlipped"
-              title="Change to table view"
+              title="Graph view"
               data-toggle="tooltip"></i>
-            <i class="fa fa-table" v-else></i>
+            <i class="fa fa-table" v-else title="Table view"
+            data-toggle="tooltip"></i>
           </b-nav-item>
           <b-nav-item @click="toggleFullscreen">
-            <i class="fa fa-compress"></i>
+            <i class="fa fa-compress" data-toggle="tooltip" title="Fullscreen" ></i>
           </b-nav-item>
         </template>
       </b-navbar-nav>

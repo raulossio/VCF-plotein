@@ -11,7 +11,7 @@
         {{data.value.join(', ')}}
       </template>
       <template slot="samples" slot-scope="data">
-        {{data.value.map(d => d.name).join(', ')}}
+        {{data.value.map(d => d.name + " (" + hetorhom(d.value) + ") ").join(', ')}}
       </template>
       <template slot="table-caption">
         Variants in graph
@@ -34,8 +34,17 @@
     },
     data: () => ({
       currentPage: 1,
-      perPage: 10
+    //perPage: 10
     }),
+    methods: {
+      hetorhom: function(sampleinfo) {
+        if(sampleinfo === "1/1"){
+          return "hom";
+        }else{
+          return "het";
+        }
+      }
+    },
     computed: {
       ...mapGetters({
         myVersion: 'getVersion',
