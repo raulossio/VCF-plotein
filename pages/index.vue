@@ -113,6 +113,11 @@ data () {
           category: 'About the app'
         },
         {
+          title: 'Where can I find a use case?',
+          value: 'You can find a document with a use case of VCF/Plotein on the following address: https://drive.google.com/file/d/1pQLIfmEM24AKP07OoMqg_fmcYRuny4Xx/view?usp=sharing',
+          category: 'Use case'
+        },
+        {
           title: 'Where can I send comments, questions or bugs?',
           value: 'Please write to us at vcfplotein@liigh.unam.mx.',
           category: 'About the team'

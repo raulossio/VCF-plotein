@@ -17,11 +17,11 @@
         Variants in graph
       </template>
     </b-table>
-    <b-pagination
+    <!--<b-pagination
       class="justify-content-center"
       :total-rows="variants.length"
       :per-page="perPage"
-      v-model="currentPage" />
+      v-model="currentPage" />-->
   </div>
 </template>
 
